@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <h1>Choose a song</h1>
+        <input onchange="pickSong(event)" type="file">
+        <h1 id="musicTitle"></h1>
+        <audio id="theAudio"></audio>
+        <input onchange="seekAudio(event)" id="seek" type="range" value="0" min="0" max="100">
+        <button onclick="prev()">Prev</button>
+        <button id="playBtn" onclick="playSong(event)">Play</button>
+        <button id="pauseBtn" onclick="pauseSong(event)">Pause</button>
+        <button onclick="next()">Next</button>
+    </main>
+</body>
+</html>
+
+<script>
+    let index = 0
+    let musicArr = [];
+    let theAudio = document.getElementById("theAudio")
+    function pickSong(ev){
+        let file = ev.target.files[0]
+        console.log(ev.target.files);
+        let reader = new FileReader()
+        reader.addEventListener("load", (e)=>{
+            let res = e.target.result;
+            let myMusic = {
+                musicName: file.name,
+                url: res
+            }
+            musicArr.push(myMusic)
+            console.log(musicArr);
+            musicTitle.innerHTML = musicArr[index].musicName
+            theAudio.src = musicArr[index].url
+        })
+        if(file){
+            reader.readAsDataURL(file)
+        }
+    }
+    pauseBtn.style.display = "none"
+    function playSong(ev){
+        theAudio.play();
+        playBtn.style.display = "none";
+        pauseBtn.style.display = "initial"
+    }
+    function pauseSong(){
+        theAudio.pause();
+        playBtn.style.display = "initial";
+        pauseBtn.style.display = "none"
+    }
+    function prev(){
+        index--
+        musicTitle.innerHTML = musicArr[index].musicName
+        theAudio.src = musicArr[index].url
+    }
+    function next(){
+        index++;
+        musicTitle.innerHTML = musicArr[index].musicName
+        theAudio.src = musicArr[index].url
+    }
+    function seekAudio(ev){
+        // let seeked = (theAudio.currentTime / theAudio.duration) * 100
+        let seeking = ( ev.target.value / 100) * theAudio.duration;
+        console.log(( ev.target.value / 100) * theAudio.duration);
+        theAudio.currentTime = seeking;
+        // ev.target.value = seeked
+        // console.log(theAudio.currentTime);
+        // ev.target.value = seeking
+        // console.log(ev.target.value);
+    }
+</script>
